@@ -32,11 +32,12 @@ class LSTM(chainer.Chain):
             embed=L.EmbedID(p+1, n_units),
             l1=L.LSTM(n_units, n_units),
             l2=L.Linear(n_units, p+1),
+            bnorm=L.BatchNormalization(n_units)
         )
 
     def __call__(self, x):
         h0 = self.embed(x)
-        h1 = self.l1(h0)
+        h1 = F.dropout(self.l1(h0))
         y = self.l2(h1)
         return y
 
