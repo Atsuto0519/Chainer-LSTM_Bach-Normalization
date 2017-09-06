@@ -21,7 +21,22 @@ from chainer import cuda
 
 # LSTMのネットワーク定義
 from bnlstm import BNLSTM
+class LSTM(chainer.Chain):
+    def __init__(self, p, n_units, train=True):
+        super(LSTM, self).__init__(
+            embed=L.EmbedID(p+1, n_units),
+            l1=BNLSTM(n_units, n_units),
+            l2=L.Linear(n_units, p+1),
+        )
 
+    def __call__(self, x):
+        h0 = self.embed(x)
+        h1 = self.l1(h0)
+        y = self.l2(h1)
+        return y
+
+    def reset_state(self):
+        self.l1.reset_state()
 
 # 結合荷重のシード値を固定
 seed = 0
@@ -53,7 +68,7 @@ print(train_data[0])
 print(train_data[1])
 
 # モデルの準備
-lstm = BNLSTM(p , n_units)
+lstm = LSTM(p , n_units)
 # このようにすることで分類タスクを簡単にかける
 # 詳しくはドキュメントを読むとよい
 model = L.Classifier(lstm)

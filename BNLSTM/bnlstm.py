@@ -169,7 +169,7 @@ class BatchNormalization(L.BatchNormalization):
 		self.add_persistent('N', 0)
 		self.decay = decay
 		self.eps = eps
-		
+
 def _extract_gates(x):
 	r = x.reshape((x.shape[0], x.shape[1] // 4, 4) + x.shape[2:])
 	return (r[:, :, i] for i in range(4))
@@ -268,7 +268,7 @@ def bn_lstm_cell(c_prev, x):
 
 def bn_lstm_state(c, x):
 	return HiddenState()(c, x)
-	
+
 
 
 def _as_mat(x):
